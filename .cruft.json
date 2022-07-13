@@ -1,0 +1,51 @@
+{
+  "template": "https://github.com/lkubb/salt-template-formula-compose",
+  "commit": "3bf116fca254f07ebcba5a30fcc5f071472ef84a",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "_extensions": [
+        "local_extensions.YAMLDumper"
+      ],
+      "_jinja2_env_vars": {
+        "block_start_string": "{!",
+        "block_end_string": "!}",
+        "variable_start_string": "{=",
+        "variable_end_string": "=}",
+        "comment_start_string": "{@",
+        "comment_end_string": "@}"
+      },
+      "name": "Sonarr",
+      "abbr": "sonarr",
+      "abbr_pysafe": "sonarr",
+      "project_name": "sonarr",
+      "containers": "sonarr",
+      "git_username": "lkubb",
+      "_lookup": {
+        "containers": {
+          "sonarr": {
+            "image": "ghcr.io/linuxserver/sonarr:latest"
+          }
+        },
+        "paths": {
+          "data": "data",
+          "misc": []
+        }
+      },
+      "_settings": {
+        "config": {
+          "general": {}
+        },
+        "container": {
+          "host_port": 5048,
+          "pgid": null,
+          "puid": null,
+          "tz": "Etc/UTC"
+        },
+        "mount_paths": []
+      },
+      "_template": "https://github.com/lkubb/salt-template-formula-compose"
+    }
+  },
+  "directory": null
+}

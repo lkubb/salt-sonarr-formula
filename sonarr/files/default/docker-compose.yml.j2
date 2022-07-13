@@ -1,0 +1,19 @@
+---
+version: "2.1"
+services:
+  sonarr:
+    image: {{ sonarr.lookup.containers.sonarr.image }}
+    container_name: sonarr
+    env_file:
+      - {{ sonarr.lookup.paths.config_sonarr }}
+    volumes:
+      - {{ sonarr.lookup.paths.data }}:/config
+{%- for path in sonarr.mount_paths %}
+      - {{ path }}:{{ path }}
+{%- endfor %}
+{%- for path in sonarr.lookup.paths.misc %}
+      - {{ path }}:{{ path }}
+{%- endfor %}
+    ports:
+      - {{ sonarr.container.host_port }}:8989
+    restart: unless-stopped
