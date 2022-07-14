@@ -18,6 +18,18 @@ Sonarr user account is present:
     # (on Debian 11) subuid/subgid are only added automatically for non-system users
     - system: false
 
+{%- if sonarr.lookup.media_group.gid %}
+
+Sonarr user is member of dedicated media group:
+  group.present:
+    - name: {{ sonarr.lookup.media_group.name }}
+    - gid: {{ sonarr.lookup.media_group.gid }}
+    - addusers:
+      - {{ sonarr.lookup.user.name }}
+    - require:
+      - user: {{ sonarr.lookup.user.name }}
+{%- endif %}
+
 Sonarr user session is initialized at boot:
   compose.lingering_managed:
     - name: {{ sonarr.lookup.user.name }}
@@ -57,6 +69,16 @@ Sonarr is installed:
     - {{ param }}: {{ val }}
 {%-   endif %}
 {%- endfor %}
+{%- if sonarr.install.rootless and sonarr.container.userns_keep_id %}
+    - podman_create_args:
+        # this maps the host uid/gid to the same ones inside the container
+        # important for network share access
+        # https://github.com/containers/podman/issues/5239#issuecomment-587175806
+      - userns: keep-id
+        # linuxserver images generally assume to be started as root,
+        # then drop privileges as defined in PUID/PGID.
+      - user: 0
+{%- endif %}
 {%- for param, val in sonarr.lookup.compose.service.items() %}
 {%-   if val is not none %}
     - {{ param }}: {{ val }}

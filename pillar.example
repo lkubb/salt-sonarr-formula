@@ -39,9 +39,20 @@ sonarr:
 
   container:
     host_port: 5048
+      # These influence the linuxserver image-based container process UID/GID.
+      # When userns_keep_id is in use, pgid should be the same as the dedicated
+      # media group which owns the data. This formula syncs them automatically,
+      # so you should leave it unset.
     pgid: null
     puid: null
     tz: Etc/UTC
+      # This maps the UID/GID of the user running the container to the same ones
+      # inside it. This allows to run the container process unprivileged, but
+      # still e.g. write to network shares with the same permissions as the host
+      # user (NFS/SMB do not know about host user namespaces of course).
+      # (see also comment on lookup:media_group)
+      # This is only allowed for rootless containers.
+    userns_keep_id: true
 
     # These paths will be mounted and added as root folders.
     # See lookup.paths.misc for mounts that will not be added as such.
@@ -77,6 +88,16 @@ sonarr:
     containers:
       sonarr:
         image: ghcr.io/linuxserver/sonarr:latest
+      # This formula generally assumes Sonarr needs to work with other programs
+      # on the same data, thus the dedicated media group. The data should
+      # be owned by this group and have group rw permissions set.
+      # This is especially needed when two or more rootless containers are running
+      # on the same host and need access to the same data. This might be superfluous
+      # once rootless network share mounting is easily possible.
+    media_group:
+        # Set this to something falsey to disable media group creation.
+      gid: 3414
+      name: mediarr
 
   tofs:
       # The files_switch key serves as a selector for alternative

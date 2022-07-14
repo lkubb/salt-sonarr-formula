@@ -27,6 +27,10 @@
             "image": "ghcr.io/linuxserver/sonarr:latest"
           }
         },
+        "media_group": {
+          "gid": 3414,
+          "name": "mediarr"
+        },
         "paths": {
           "data": "data",
           "misc": []
@@ -38,6 +42,7 @@
         },
         "container": {
           "host_port": 5048,
+          "userns_keep_id": true,
           "pgid": null,
           "puid": null,
           "tz": "Etc/UTC"

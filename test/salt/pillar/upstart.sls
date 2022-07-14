@@ -35,6 +35,9 @@ sonarr:
     containers:
       sonarr:
         image: ghcr.io/linuxserver/sonarr:latest
+    media_group:
+      gid: 3414
+      name: mediarr
   install:
     rootless: true
     remove_all_data_for_sure: false
@@ -45,6 +48,7 @@ sonarr:
     pgid: null
     puid: null
     tz: Etc/UTC
+    userns_keep_id: true
   mount_paths: []
 
   tofs:
