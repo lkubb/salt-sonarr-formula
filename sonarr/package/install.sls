@@ -78,6 +78,7 @@ Sonarr is installed:
         # linuxserver images generally assume to be started as root,
         # then drop privileges as defined in PUID/PGID.
       - user: 0
+      # Pods cannot be used with userns. This is ensured in post-map.jinja
 {%- endif %}
 {%- for param, val in sonarr.lookup.compose.service.items() %}
 {%-   if val is not none %}
