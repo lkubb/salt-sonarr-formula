@@ -27,13 +27,14 @@
 {%- endif %}
 
 
+
 {#-
-    If userns_keep_id is in use, pods cannot be used.
+    If userns_keep_id is in use, it has to be passed to the pod if pods
+    are in use.
 -#}
 
-{%- if mapdata.container.userns_keep_id %}
-  {%- if mapdata.lookup.compose.create_pod %}
-    {%- do salt["log.warning"]("Cannot use pods when userns=keep-id is in use. Disabling pod creation.") %}
+{%- if mapdata.container.userns_keep_id and mapdata.install.rootless %}
+  {%- if mapdata.lookup.compose.create_pod is not false %}
+    {%- do mapdata | append_dict_key_value("lookup:compose:pod_args", {"userns": "keep-id"}) %}
   {%- endif %}
-  {%- do mapdata.lookup.compose.update({"create_pod": false}) %}
 {%- endif %}

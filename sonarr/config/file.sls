@@ -20,7 +20,7 @@ Sonarr environment files are managed:
                   }}
     - mode: '0640'
     - user: root
-    - group: {{ sonarr.lookup.user.name }}
+    - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
     - makedirs: True
     - template: jinja
     - require:
@@ -35,7 +35,7 @@ Sonarr xml config file is managed:
     - name: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
     - mode: '0644'
     - user: {{ sonarr.lookup.user.name }}
-    - group: {{ sonarr.lookup.user.name }}
+    - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
     - makedirs: True
     - require:
       - user: {{ sonarr.lookup.user.name }}
@@ -46,7 +46,16 @@ Sonarr xml config file is managed:
     - merge_if_exists: true
     - dataset: {{ sonarr.config.general | json }}
 
-{%- set puid_pgid = (sonarr.container.puid or 911) ~ ":" ~ (sonarr.container.pgid or 911) %}
+{%- set puid = sonarr.container.puid or 911 %}
+{%- set pgid = sonarr.container.pgid or 911 %}
+
+{%- if sonarr.install.rootless and sonarr.container.userns_keep_id %}
+{#- somehow, the ID is off by one when userns_keep_id is active -#}
+{%-   set puid = puid + 1 %}
+{%-   set pgid = 0 %}
+{%- endif %}
+
+{%- set puid_pgid = puid ~ ":" ~ pgid %}
 
 # The container entry script does not ensure proper permissions.
 Sonarr xml config file has the correct owner:
