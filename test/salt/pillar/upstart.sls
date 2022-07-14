@@ -31,6 +31,7 @@ sonarr:
       name: sonarr
       shell: /usr/sbin/nologin
       uid: null
+      gid: null
     containers:
       sonarr:
         image: ghcr.io/linuxserver/sonarr:latest
