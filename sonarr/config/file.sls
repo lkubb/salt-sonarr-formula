@@ -58,7 +58,7 @@ Sonarr xml config file has the correct owner:
         chown {{ puid_pgid }} config.xml
     - cwd: {{ sonarr.lookup.paths.data }}
     - unless:
-      - "[ $(stat --format '%u:%g' config/config.xml) = '{{ puid_pgid }}' ]"
+      - "[ $(stat --format '%u:%g' '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]"
     - onlyif:
       - fun: file.file_exists
         path: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
