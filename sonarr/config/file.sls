@@ -114,6 +114,9 @@ Sonarr mount paths are setup as root folders:
     - db: {{ sonarr.lookup.paths.data | path_join("sonarr.db") }}
     - table: RootFolders
     - where_sql: Path=?
+    - onlyif:
+      - fun: file.file_exists
+        path: {{ sonarr.lookup.paths.data | path_join("sonarr.db") }}
     - require:
       - Sonarr has initialized the database
     - prereq:
