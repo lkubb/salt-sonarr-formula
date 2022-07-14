@@ -33,6 +33,9 @@ Sonarr user session is not initialized at boot:
   compose.lingering_managed:
     - name: {{ sonarr.lookup.user.name }}
     - enable: false
+    - onlyif:
+      - fun: user.info
+        name: {{ sonarr.lookup.user.name }}
 
 Sonarr user account is absent:
   user.absent:
