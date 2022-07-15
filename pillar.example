@@ -14,7 +14,8 @@ sonarr:
       # and relates to basic application configuration.
       # More detailed configuration is found inside `sonarr.db` sqlite db.
       # @TODO manage that somewhat
-    general: {}
+    general:
+      AnalyticsEnabled: false
       # BindAddress: *
       # Port: 8989
       # EnableSsl: false
@@ -22,7 +23,6 @@ sonarr:
       # ApiKey: null
       # AuthenticationEnabled: false
       # AuthenticationMethod: null
-      # AnalyticsEnabled: false
       # Branch: main
       # LogLevel: info
       # ConsoleLogLevel: ''

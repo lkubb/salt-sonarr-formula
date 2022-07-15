@@ -38,7 +38,9 @@
       },
       "_settings": {
         "config": {
-          "general": {}
+          "general": {
+            "AnalyticsEnabled": false
+          }
         },
         "container": {
           "host_port": 5048,

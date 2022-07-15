@@ -42,7 +42,8 @@ sonarr:
     rootless: true
     remove_all_data_for_sure: false
   config:
-    general: {}
+    general:
+      AnalyticsEnabled: false
   container:
     host_port: 5048
     pgid: null
