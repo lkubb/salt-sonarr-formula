@@ -32,6 +32,8 @@ def deserialize(stream_or_string, **options):
         # no settings result in root to be read as {"Config": None}
         if "Config" in ret or not ret:
             return {}
+
+
         return ret
 
     except Exception as error:  # pylint: disable=broad-except
@@ -46,11 +48,13 @@ def serialize(obj, **options):
     :param obj: the data structure to serialize
     """
 
-    ret = "<Config>"
+    lines = []
 
     for conf, val in obj.items():
-        ret += f"\n  <{conf}>{val}</{conf}>"
+        val = val if val is not None else ''
+        lines.append(f"  <{conf}>{val}</{conf}>")
 
-    ret += "</Config>\n"
+    if not lines:
+        return "<Config></Config>"
 
-    return ret
+    return "\n".join(["<Config>"] + lines + ["</Config>\n"])
