@@ -114,11 +114,12 @@ Sonarr mount paths are setup as root folders:
   sqlite3.row_present:
     - names:
 {%- for path in sonarr.mount_paths %}
-      - {{ path }}:
+{%-   set render_path = path.values() | first if path is mapping else path %}
+      - {{ render_path }}:
         - where_args:
-          - {{ path }}
+          - {{ render_path }}
         - data:
-            Path: {{ path }}
+            Path: {{ render_path }}
 {%- endfor %}
     - db: {{ sonarr.lookup.paths.data | path_join("sonarr.db") }}
     - table: RootFolders

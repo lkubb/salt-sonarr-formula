@@ -9,10 +9,18 @@ services:
     volumes:
       - {{ sonarr.lookup.paths.data }}:/config
 {%- for path in sonarr.mount_paths %}
+{%-   if path is mapping %}
+      - {{ path | first }}:{{ path.values() | first }}
+{%-   else %}
       - {{ path }}:{{ path }}
+{%-   endif %}
 {%- endfor %}
 {%- for path in sonarr.lookup.paths.misc %}
+{%-   if path is mapping %}
+      - {{ path | first }}:{{ path.values() | first }}
+{%-   else %}
       - {{ path }}:{{ path }}
+{%-   endif %}
 {%- endfor %}
     ports:
       - {{ sonarr.container.host_port }}:8989
