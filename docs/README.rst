@@ -42,6 +42,9 @@ If you need (non-default) configuration, please refer to:
 Special notes
 -------------
 * This formula is written with the custom `compose modules <https://github.com/lkubb/salt-podman-formula>`_ in mind and will not work without them.
+* Generally, you need to keep the mount paths between containers consistent (*arr, downloader, player etc.).
+* For atomic file operations to work (instant moves/hardlinks), please make sure your path layout follows `this guide <https://wiki.servarr.com/docker-guide#consistent-and-well-planned-paths>`_.
+* For setup tips, see `TRaSH Guides <https://trash-guides.info/>`_ / `Github repo <https://github.com/TRaSH-/Guides>`_.
 
 Configuration
 -------------
