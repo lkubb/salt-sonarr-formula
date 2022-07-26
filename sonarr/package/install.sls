@@ -94,8 +94,5 @@ Sonarr is installed:
 {%- endif %}
 
 Custom Sonarr xml serializer is installed:
-  saltutil.sync_all:
+  saltutil.sync_serializers:
     - refresh: true
-    - extmod_whitelist:
-        serializers:
-          - sonarr_xml
