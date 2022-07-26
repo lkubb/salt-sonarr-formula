@@ -43,6 +43,9 @@ Sonarr user account is absent:
     - purge: {{ sonarr.install.remove_all_data_for_sure }}
     - require:
       - Sonarr is absent
+    - retry:
+        attempts: 5
+        interval: 2
 
 {%- if sonarr.install.remove_all_data_for_sure %}
 

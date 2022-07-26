@@ -32,6 +32,8 @@ Sonarr user session is initialized at boot:
   compose.lingering_managed:
     - name: {{ sonarr.lookup.user.name }}
     - enable: {{ sonarr.install.rootless }}
+    - require:
+      - user: {{ sonarr.lookup.user.name }}
 
 Sonarr paths are present:
   file.directory:
