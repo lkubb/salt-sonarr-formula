@@ -30,20 +30,27 @@ Sonarr environment files are managed:
     - context:
         sonarr: {{ sonarr | json }}
 
-Sonarr xml config file is managed:
-  file.serialize:
-    - name: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
-    - mode: '0644'
+Sonarr data path exists:
+  file.directory:
+    - name: {{ sonarr.lookup.paths.data }}
+    - mode: '0755'
     - user: {{ sonarr.lookup.user.name }}
     - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
     - makedirs: True
     - require:
       - user: {{ sonarr.lookup.user.name }}
+
+Sonarr xml config file is managed:
+  file.serialize:
+    - name: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
+    - mode: '0644'
+    - serializer: sonarr_xml
+    - merge_if_exists: true
+    - require:
+      - Sonarr data path exists
       - Custom Sonarr xml serializer is installed
     - watch_in:
       - Sonarr is installed
-    - serializer: sonarr_xml
-    - merge_if_exists: true
     - dataset: {{ sonarr.config.general | json }}
 
 {%- set puid = sonarr.container.puid or 911 %}
@@ -67,7 +74,7 @@ Sonarr xml config file has the correct owner:
         chown {{ puid_pgid }} config.xml
     - cwd: {{ sonarr.lookup.paths.data }}
     - unless:
-      - "[ $(stat --format '%u:%g' '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]"
+      - "[ $({{ "podman unshare " if sonarr.install.rootless }}stat --format '%u:%g' '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]"
     - onlyif:
       - fun: file.file_exists
         path: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
