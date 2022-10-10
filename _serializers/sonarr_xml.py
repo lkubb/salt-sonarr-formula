@@ -4,8 +4,8 @@
 
 from xml.etree import ElementTree as ET
 
-from salt.serializers import DeserializationError, SerializationError
 import salt.utils.xmlutil
+from salt.serializers import DeserializationError
 
 __all__ = ["deserialize", "serialize", "available"]
 
@@ -33,7 +33,6 @@ def deserialize(stream_or_string, **options):
         if "Config" in ret or not ret:
             return {}
 
-
         return ret
 
     except Exception as error:  # pylint: disable=broad-except
@@ -51,10 +50,12 @@ def serialize(obj, **options):
     lines = []
 
     for conf, val in obj.items():
-        val = val if val is not None else ''
+        val = val if val is not None else ""
         lines.append(f"  <{conf}>{val}</{conf}>")
 
     if not lines:
         return "<Config></Config>"
 
-    return "\n".join(["<Config>"] + lines + ["</Config>\n"])
+    # returning a bytestring because otherwise, file.serialize
+    # appends a final newline, which is stripped by Sonarr again
+    return "\n".join(["<Config>"] + lines + ["</Config>"]).encode()
