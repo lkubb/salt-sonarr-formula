@@ -44,6 +44,8 @@ sonarr:
       name: mediarr
   install:
     rootless: true
+    autoupdate: true
+    autoupdate_service: false
     remove_all_data_for_sure: false
   config:
     general:

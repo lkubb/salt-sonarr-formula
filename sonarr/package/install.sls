@@ -98,3 +98,15 @@ Sonarr is installed:
 Custom Sonarr xml serializer is installed:
   saltutil.sync_serializers:
     - refresh: true
+
+{%- if sonarr.install.autoupdate_service is not none %}
+
+Podman autoupdate service is managed for Sonarr:
+{%-   if sonarr.install.rootless %}
+  compose.systemd_service_{{ "enabled" if sonarr.install.autoupdate_service else "disabled" }}:
+    - user: {{ sonarr.lookup.user.name }}
+{%-   else %}
+  service.{{ "enabled" if sonarr.install.autoupdate_service else "disabled" }}:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}

@@ -8,6 +8,18 @@
 include:
   - {{ sls_config_clean }}
 
+{%- if sonarr.install.autoupdate_service %}
+
+Podman autoupdate service is disabled for Sonarr:
+{%-   if sonarr.install.rootless %}
+  compose.systemd_service_disabled:
+    - user: {{ sonarr.lookup.user.name }}
+{%-   else %}
+  service.disabled:
+{%-   endif %}
+    - name: podman-auto-update.timer
+{%- endif %}
+
 Sonarr is absent:
   compose.removed:
     - name: {{ sonarr.lookup.paths.compose }}

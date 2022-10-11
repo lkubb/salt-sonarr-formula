@@ -6,6 +6,10 @@ services:
     container_name: sonarr
     env_file:
       - {{ sonarr.lookup.paths.config_sonarr }}
+{%- if sonarr.install.autoupdate %}
+    labels:
+      - io.containers.autoupdate=registry
+{%- endif %}
     volumes:
       - {{ sonarr.lookup.paths.data }}:/config
 {%- for path in sonarr.mount_paths %}
