@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
 {%- set tplroot = tpldir.split('/')[0] %}
@@ -74,7 +73,9 @@ Sonarr xml config file has the correct owner:
         chown {{ puid_pgid }} config.xml
     - cwd: {{ sonarr.lookup.paths.data }}
     - unless:
-      - "[ $({{ "podman unshare " if sonarr.install.rootless }}stat --format '%u:%g' '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]"
+      - |
+          [ $({{ "podman unshare " if sonarr.install.rootless }}stat --format '%u:%g'
+          '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]"
     - onlyif:
       - fun: file.file_exists
         path: {{ sonarr.lookup.paths.data | path_join("config.xml") }}

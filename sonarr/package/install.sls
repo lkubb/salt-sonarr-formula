@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as sonarr with context %}
 {%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
 
@@ -45,11 +44,28 @@ Sonarr paths are present:
     - require:
       - user: {{ sonarr.lookup.user.name }}
 
+{%- if sonarr.install.podman_api %}
+
+Sonarr podman API is enabled:
+  compose.systemd_service_enabled:
+    - name: podman
+    - user: {{ sonarr.lookup.user.name }}
+    - require:
+      - Sonarr user session is initialized at boot
+
+Sonarr podman API is available:
+  compose.systemd_service_running:
+    - name: podman
+    - user: {{ sonarr.lookup.user.name }}
+    - require:
+      - Sonarr user session is initialized at boot
+{%- endif %}
+
 Sonarr compose file is managed:
   file.managed:
     - name: {{ sonarr.lookup.paths.compose }}
-    - source: {{ files_switch(['docker-compose.yml', 'docker-compose.yml.j2'],
-                              lookup='Sonarr compose file is present'
+    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
+                              lookup="Sonarr compose file is present"
                  )
               }}
     - mode: '0644'

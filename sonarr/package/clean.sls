@@ -1,8 +1,14 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_config_clean = tplroot ~ '.config.clean' %}
+{#-
+    Removes the sonarr containers
+    and the corresponding user account and service units.
+    Has a depency on `sonarr.config.clean`_.
+    If ``remove_all_data_for_sure`` was set, also removes all data.
+#}
+
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_config_clean = tplroot ~ ".config.clean" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as sonarr with context %}
 
 include:
@@ -40,6 +46,25 @@ Sonarr compose file is absent:
     - name: {{ sonarr.lookup.paths.compose }}
     - require:
       - Sonarr is absent
+
+{%- if sonarr.install.podman_api %}
+
+Sonarr podman API is unavailable:
+  compose.systemd_service_dead:
+    - name: podman
+    - user: {{ sonarr.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ sonarr.lookup.user.name }}
+
+Sonarr podman API is disabled:
+  compose.systemd_service_disabled:
+    - name: podman
+    - user: {{ sonarr.lookup.user.name }}
+    - onlyif:
+      - fun: user.info
+        name: {{ sonarr.lookup.user.name }}
+{%- endif %}
 
 Sonarr user session is not initialized at boot:
   compose.lingering_managed:
