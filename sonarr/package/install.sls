@@ -48,14 +48,14 @@ Sonarr paths are present:
 
 Sonarr podman API is enabled:
   compose.systemd_service_enabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ sonarr.lookup.user.name }}
     - require:
       - Sonarr user session is initialized at boot
 
 Sonarr podman API is available:
   compose.systemd_service_running:
-    - name: podman
+    - name: podman.socket
     - user: {{ sonarr.lookup.user.name }}
     - require:
       - Sonarr user session is initialized at boot

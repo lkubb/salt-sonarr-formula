@@ -51,7 +51,7 @@ Sonarr compose file is absent:
 
 Sonarr podman API is unavailable:
   compose.systemd_service_dead:
-    - name: podman
+    - name: podman.socket
     - user: {{ sonarr.lookup.user.name }}
     - onlyif:
       - fun: user.info
@@ -59,7 +59,7 @@ Sonarr podman API is unavailable:
 
 Sonarr podman API is disabled:
   compose.systemd_service_disabled:
-    - name: podman
+    - name: podman.socket
     - user: {{ sonarr.lookup.user.name }}
     - onlyif:
       - fun: user.info
