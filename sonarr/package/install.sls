@@ -2,7 +2,7 @@
 
 {%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as sonarr with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 Sonarr user account is present:
   user.present:
@@ -64,14 +64,16 @@ Sonarr podman API is available:
 Sonarr compose file is managed:
   file.managed:
     - name: {{ sonarr.lookup.paths.compose }}
-    - source: {{ files_switch(["docker-compose.yml", "docker-compose.yml.j2"],
-                              lookup="Sonarr compose file is present"
+    - source: {{ files_switch(
+                    ["docker-compose.yml", "docker-compose.yml.j2"],
+                    config=sonarr,
+                    lookup="Sonarr compose file is present",
                  )
               }}
     - mode: '0644'
     - user: root
     - group: {{ sonarr.lookup.rootgroup }}
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - makedirs: true
     - context:

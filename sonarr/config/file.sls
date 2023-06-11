@@ -1,9 +1,9 @@
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
-{%- set sls_package_install = tplroot ~ '.package.install' %}
+{%- set tplroot = tpldir.split("/")[0] %}
+{%- set sls_package_install = tplroot ~ ".package.install" %}
 {%- from tplroot ~ "/map.jinja" import mapdata as sonarr with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 include:
   - {{ sls_package_install }}
@@ -12,15 +12,17 @@ Sonarr environment files are managed:
   file.managed:
     - names:
       - {{ sonarr.lookup.paths.config_sonarr }}:
-        - source: {{ files_switch(['sonarr.env', 'sonarr.env.j2'],
-                                  lookup='sonarr environment file is managed',
-                                  indent_width=10,
+        - source: {{ files_switch(
+                        ["sonarr.env", "sonarr.env.j2"],
+                        config=sonarr,
+                        lookup="sonarr environment file is managed",
+                        indent_width=10,
                      )
                   }}
     - mode: '0640'
     - user: root
     - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
-    - makedirs: True
+    - makedirs: true
     - template: jinja
     - require:
       - user: {{ sonarr.lookup.user.name }}
@@ -35,7 +37,7 @@ Sonarr data path exists:
     - mode: '0755'
     - user: {{ sonarr.lookup.user.name }}
     - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
-    - makedirs: True
+    - makedirs: true
     - require:
       - user: {{ sonarr.lookup.user.name }}
 
