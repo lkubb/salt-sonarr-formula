@@ -119,6 +119,8 @@ Sonarr is not running before database modification:
     - timeout: 20
     - require:
       - Sonarr is installed
+    - prereq:
+      - Sonarr mount paths are setup as root folders
 
 Sonarr mount paths are setup as root folders:
   sqlite3.row_present:
@@ -139,8 +141,6 @@ Sonarr mount paths are setup as root folders:
         path: {{ sonarr.lookup.paths.data | path_join("sonarr.db") }}
     - require:
       - Sonarr has initialized the database
-    - prereq:
-      - Sonarr is not running before database modification
 
 Sonarr is running again after shutdown:
   compose.running:
