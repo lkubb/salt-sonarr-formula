@@ -116,6 +116,8 @@ Sonarr is installed:
 Custom Sonarr xml serializer is installed:
   saltutil.sync_serializers:
     - refresh: true
+    - unless:
+      - '{{ ("sonarr_xml" in salt["saltutil.list_extmods"]().get("serializers", [])) | lower }}'
 
 {%- if sonarr.install.autoupdate_service is not none %}
 
