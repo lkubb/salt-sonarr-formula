@@ -32,58 +32,36 @@ Sonarr environment files are managed:
         sonarr: {{ sonarr | json }}
 
 Sonarr data path exists:
-  file.directory:
+  compose.file_directory:
     - name: {{ sonarr.lookup.paths.data }}
+    - project: {{ sonarr.lookup.paths.compose }}
     - mode: '0755'
-    - user: {{ sonarr.lookup.user.name }}
-    - group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
+    - user: {{ sonarr.container.puid or 911 }}
+    - group: {{ sonarr.container.pgid or 911 }}
+    - fail_kwargs:
+        user: {{ sonarr.lookup.user.name }}
+        group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
     - makedirs: true
     - require:
       - user: {{ sonarr.lookup.user.name }}
+      - Sonarr is installed
 
 Sonarr xml config file is managed:
-  file.serialize:
+  compose.file_serialize:
     - name: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
+    - project: {{ sonarr.lookup.paths.compose }}
     - mode: '0644'
+    - user: {{ sonarr.container.puid or 911 }}
+    - group: {{ sonarr.container.pgid or 911 }}
+    - fail_kwargs:
+        user: {{ sonarr.lookup.user.name }}
+        group: __slot__:salt:user.primary_group({{ sonarr.lookup.user.name }})
     - serializer: sonarr_xml
     - merge_if_exists: true
     - require:
       - Sonarr data path exists
       - Custom Sonarr xml serializer is installed
-    - watch_in:
-      - Sonarr is installed
     - dataset: {{ sonarr.config.general | json }}
-
-{%- set puid = sonarr.container.puid or 911 %}
-{%- set pgid = sonarr.container.pgid or 911 %}
-
-{%- if sonarr.install.rootless and sonarr.container.userns_keep_id %}
-{#- somehow, the ID is off by one when userns_keep_id is active -#}
-{%-   set puid = puid + 1 %}
-{%-   set pgid = 0 %}
-{%- endif %}
-
-{%- set puid_pgid = puid ~ ":" ~ pgid %}
-
-# The container entry script does not ensure proper permissions.
-Sonarr xml config file has the correct owner:
-  cmd.run:
-    - name: |
-{%- if sonarr.install.rootless %}
-        podman unshare \
-{%- endif %}
-        chown {{ puid_pgid }} config.xml
-    - cwd: {{ sonarr.lookup.paths.data }}
-    - unless:
-      - >
-          [ $({{ "podman unshare " if sonarr.install.rootless }}stat --format '%u:%g'
-          '{{ sonarr.lookup.paths.data | path_join("config.xml") }}') = '{{ puid_pgid }}' ]
-    - onlyif:
-      - fun: file.file_exists
-        path: {{ sonarr.lookup.paths.data | path_join("config.xml") }}
-{%- if sonarr.install.rootless %}
-    - runas: {{ sonarr.lookup.user.name }}
-{%- endif %}
 
 {%- if sonarr.mount_paths %}
 
