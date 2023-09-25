@@ -34,4 +34,6 @@ Sonarr service is running:
 {%- endif %}
     - watch:
       - Sonarr is installed
+      - Sonarr environment files are managed
+      - Sonarr data path exists
       - Sonarr xml config file is managed

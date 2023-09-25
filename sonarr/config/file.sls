@@ -26,7 +26,7 @@ Sonarr environment files are managed:
     - template: jinja
     - require:
       - user: {{ sonarr.lookup.user.name }}
-    - watch_in:
+    - require_in:
       - Sonarr is installed
     - context:
         sonarr: {{ sonarr | json }}
