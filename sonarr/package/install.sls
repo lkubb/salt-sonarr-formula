@@ -26,6 +26,21 @@ Sonarr user account is present:
     - name: {{ sonarr.lookup.media_group.name }}
     - gid: {{ sonarr.lookup.media_group.gid }}
 {%- endif %}
+  file.append:
+    - names:
+      - {{ sonarr.lookup.user.home | path_join(".bashrc") }}:
+        - text:
+          - export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          - export DBUS_SESSION_BUS_ADDRESS=unix:path=$XDG_RUNTIME_DIR/bus
+
+      - {{ sonarr.lookup.user.home | path_join(".bash_profile") }}:
+        - text: |
+            if [ -f ~/.bashrc ]; then
+              . ~/.bashrc
+            fi
+
+    - require:
+      - user: {{ sonarr.lookup.user.name }}
 
 Sonarr user session is initialized at boot:
   compose.lingering_managed:
